@@ -158,4 +158,8 @@ public class JsonUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean isNullOrEmpty(JsonNode node) {
+        return node.isNull() && node.isEmpty();
+    }
 }
