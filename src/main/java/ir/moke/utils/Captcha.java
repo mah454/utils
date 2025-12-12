@@ -1,5 +1,7 @@
 package ir.moke.utils;
 
+import ir.moke.MokeException;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,7 +29,7 @@ public class Captcha {
                 font = new Font("Serif", Font.PLAIN, 26);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -78,7 +80,7 @@ public class Captcha {
         try {
             ImageIO.write(image, "png", bout);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
         return bout.toByteArray();
     }

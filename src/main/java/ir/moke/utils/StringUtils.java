@@ -1,5 +1,6 @@
 package ir.moke.utils;
 
+import ir.moke.MokeException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -89,7 +90,7 @@ public class StringUtils {
             int count = lines.size();
             return lines.get(generateRandomNumber(1, count));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 

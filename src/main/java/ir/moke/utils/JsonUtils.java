@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import ir.moke.MokeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class JsonUtils {
         try {
             return objectMapper.writeValueAsString(o);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -54,7 +55,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(str, clazz);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -66,7 +67,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(file, clazz);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -76,7 +77,7 @@ public class JsonUtils {
             };
             return objectMapper.readValue(str, typeRef);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
 
     }
@@ -86,7 +87,7 @@ public class JsonUtils {
             CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
             return objectMapper.readValue(str, listType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -95,7 +96,7 @@ public class JsonUtils {
             JavaType javaType = objectMapper.getTypeFactory().constructFromCanonical(canonicalType);
             return objectMapper.readValue(str, javaType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -104,7 +105,7 @@ public class JsonUtils {
             MapType mapType = objectMapper.getTypeFactory().constructMapType(mapClassType, String.class, genericType);
             return objectMapper.readValue(str, mapType);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -114,7 +115,7 @@ public class JsonUtils {
             };
             return objectMapper.readValue(str, typeRef);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -122,7 +123,7 @@ public class JsonUtils {
         try {
             objectMapper.writeValue(file, object);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -147,7 +148,7 @@ public class JsonUtils {
         try {
             return objectMapper.readTree(str);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 
@@ -155,7 +156,7 @@ public class JsonUtils {
         try {
             return objectMapper.treeToValue(treeNode, clazz);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MokeException(e);
         }
     }
 

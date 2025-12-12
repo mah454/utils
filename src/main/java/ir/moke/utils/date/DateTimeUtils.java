@@ -4,6 +4,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.ULocale;
+import ir.moke.MokeException;
 
 import java.time.*;
 import java.time.temporal.Temporal;
@@ -64,7 +65,7 @@ public class DateTimeUtils {
             }
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse date string: " + strDate, e);
+            throw new MokeException("Failed to parse date string: " + strDate, e);
         }
     }
 
