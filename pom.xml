@@ -7,7 +7,7 @@
     <version>0.1</version>
     <name>utils</name>
 
-    <url>https://github.com/mah454/kafir</url>
+    <url>https://github.com/mah454/utils</url>
     <description>Moke common utils</description>
 
     <licenses>
@@ -25,9 +25,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:mah454/kafir.git</connection>
-        <developerConnection>scm:git:git@github.com:mah454/kafir.git</developerConnection>
-        <url>https://github.com/mah454/kafir</url>
+        <connection>scm:git:git@github.com:mah454/utils.git</connection>
+        <developerConnection>scm:git:git@github.com:mah454/utils.git</developerConnection>
+        <url>https://github.com/mah454/utils</url>
     </scm>
 
     <properties>
