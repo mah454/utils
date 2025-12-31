@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 
 public class FileSystemUtils {
 
-    public static void watchPathAsync(Path path, Consumer<Path> pathConsumer, WatchEvent.Kind<Path> kinds) {
+    public static void watchPathAsync(Path path, Consumer<Path> pathConsumer, WatchEvent.Kind<Path>... kinds) {
         Thread.startVirtualThread(() -> watchPath(path, pathConsumer, kinds));
     }
 
-    public static void watchPath(Path path, Consumer<Path> pathConsumer, WatchEvent.Kind<Path> kinds) {
+    public static void watchPath(Path path, Consumer<Path> pathConsumer, WatchEvent.Kind<Path>... kinds) {
         if (!Files.isDirectory(path))
             throw new IllegalArgumentException("path %s should be a directory".formatted(path));
         try (WatchService watchService = path.getFileSystem().newWatchService()) {
