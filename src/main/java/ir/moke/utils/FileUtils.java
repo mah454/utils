@@ -8,12 +8,10 @@ import ir.moke.utils.date.DateTimeUtils;
 
 import java.io.*;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class FileUtils {
@@ -50,6 +48,32 @@ public class FileUtils {
         } catch (IOException e) {
             return List.of();
         }
+    }
+
+    public static List<Path> listFileTree(Path root, String pattern, boolean ignoreAccessDenied,int maxDepth) {
+        List<Path> list = new ArrayList<>();
+        try {
+            Files.walkFileTree(root, Set.of(), maxDepth, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return ignoreAccessDenied ? FileVisitResult.SKIP_SUBTREE : FileVisitResult.TERMINATE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (pattern != null) {
+                        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+                        if (pathMatcher.matches(file)) list.add(file);
+                    } else {
+                        list.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new MokeException(e);
+        }
+        return list;
     }
 
     public static void delete(Path path) {
