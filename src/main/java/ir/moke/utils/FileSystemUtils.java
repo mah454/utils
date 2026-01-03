@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -36,21 +37,25 @@ public class FileSystemUtils {
         }
     }
 
-    public static void watchPathRecursiveAsync(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds) {
-        Thread.startVirtualThread(() -> watchPathRecursive(root, eventConsumer, kinds));
+    public static void watchPathRecursiveAsync(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds, int maxDepth) {
+        Thread.startVirtualThread(() -> watchPathRecursive(root, eventConsumer, kinds, maxDepth));
     }
 
     @SuppressWarnings("unchecked")
-    public static void watchPathRecursive(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds) {
+    public static void watchPathRecursive(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds, int maxDepth) {
         try (WatchService watcher = root.getFileSystem().newWatchService()) {
-            Files.walkFileTree(root, new SimpleFileVisitor<>() {
+            int rootDepth = root.getNameCount();
+            Files.walkFileTree(root, Set.of(), maxDepth, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                     try {
+                        int depth = dir.getNameCount() - rootDepth;
+                        if (depth > maxDepth) return FileVisitResult.SKIP_SUBTREE;
                         dir.register(watcher, kinds.toArray(WatchEvent.Kind[]::new));
                         WatchKey key;
                         while ((key = watcher.take()) != null) {
                             Path watchedDir = (Path) key.watchable();
+                            int watchedDepth = watchedDir.getNameCount() - rootDepth;
                             for (WatchEvent<?> pollEvent : key.pollEvents()) {
                                 WatchEvent.Kind<?> kind = pollEvent.kind();
                                 if (kind == OVERFLOW) continue;
@@ -60,7 +65,7 @@ public class FileSystemUtils {
                                 Path fullPath = watchedDir.resolve(ev.context());
 
                                 if (kind == ENTRY_CREATE && Files.isDirectory(fullPath)) {
-                                    Files.walkFileTree(fullPath, new SimpleFileVisitor<>() {
+                                    Files.walkFileTree(fullPath, Set.of(), maxDepth - watchedDepth, new SimpleFileVisitor<>() {
                                         @Override
                                         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                                             dir.register(watcher, kinds.toArray(WatchEvent.Kind[]::new));
