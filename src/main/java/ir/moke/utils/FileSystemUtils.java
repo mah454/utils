@@ -1,6 +1,7 @@
 package ir.moke.utils;
 
 import ir.moke.MokeException;
+import ir.moke.model.FullPathWatchEvent;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -14,11 +15,11 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 public class FileSystemUtils {
 
-    public static void watchPathAsync(Path path, Consumer<WatchEvent<?>> pathConsumer, List<WatchEvent.Kind<?>> kinds) {
-        Thread.startVirtualThread(() -> watchPath(path, pathConsumer, kinds));
+    public static void watchPathAsync(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<WatchEvent<?>> pathConsumer) {
+        Thread.startVirtualThread(() -> watchPath(path, kinds, pathConsumer));
     }
 
-    public static void watchPath(Path path, Consumer<WatchEvent<?>> pathConsumer, List<WatchEvent.Kind<?>> kinds) {
+    public static void watchPath(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<WatchEvent<?>> pathConsumer) {
         if (!Files.isDirectory(path))
             throw new IllegalArgumentException("path %s should be a directory".formatted(path));
         try (WatchService watchService = path.getFileSystem().newWatchService()) {
@@ -37,52 +38,61 @@ public class FileSystemUtils {
         }
     }
 
-    public static void watchPathRecursiveAsync(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds, int maxDepth) {
-        Thread.startVirtualThread(() -> watchPathRecursive(root, eventConsumer, kinds, maxDepth));
+    public static void watchPathRecursiveAsync(Path root, List<WatchEvent.Kind<Path>> kinds, int maxDepth, Consumer<FullPathWatchEvent> eventConsumer) {
+        Thread.startVirtualThread(() -> watchPathRecursive(root, kinds, maxDepth, eventConsumer));
     }
 
-    @SuppressWarnings("unchecked")
-    public static void watchPathRecursive(Path root, Consumer<WatchEvent<Path>> eventConsumer, List<WatchEvent.Kind<?>> kinds, int maxDepth) {
+    public static void watchPathRecursive(Path root, List<WatchEvent.Kind<Path>> kinds, int maxDepth, Consumer<FullPathWatchEvent> eventConsumer) {
         try (WatchService watcher = root.getFileSystem().newWatchService()) {
             int rootDepth = root.getNameCount();
             Files.walkFileTree(root, Set.of(), maxDepth, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                    int depth = dir.getNameCount() - rootDepth;
+                    if (depth > maxDepth) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
                     try {
-                        int depth = dir.getNameCount() - rootDepth;
-                        if (depth > maxDepth) return FileVisitResult.SKIP_SUBTREE;
                         dir.register(watcher, kinds.toArray(WatchEvent.Kind[]::new));
-                        WatchKey key;
-                        while ((key = watcher.take()) != null) {
-                            Path watchedDir = (Path) key.watchable();
-                            int watchedDepth = watchedDir.getNameCount() - rootDepth;
-                            for (WatchEvent<?> pollEvent : key.pollEvents()) {
-                                WatchEvent.Kind<?> kind = pollEvent.kind();
-                                if (kind == OVERFLOW) continue;
-
-                                WatchEvent<Path> ev = (WatchEvent<Path>) pollEvent;
-                                eventConsumer.accept(ev);
-                                Path fullPath = watchedDir.resolve(ev.context());
-
-                                if (kind == ENTRY_CREATE && Files.isDirectory(fullPath)) {
-                                    Files.walkFileTree(fullPath, Set.of(), maxDepth - watchedDepth, new SimpleFileVisitor<>() {
-                                        @Override
-                                        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                                            dir.register(watcher, kinds.toArray(WatchEvent.Kind[]::new));
-                                            return FileVisitResult.CONTINUE;
-                                        }
-                                    });
-                                }
-                            }
-                            key.reset();
-                        }
-                    } catch (Exception e) {
-                        throw new MokeException(e);
+                    } catch (IOException ignored) {
                     }
                     return FileVisitResult.CONTINUE;
                 }
             });
-        } catch (IOException e) {
+
+            while (true) {
+                WatchKey key = watcher.take();
+                Path watchedDir = (Path) key.watchable();
+                int watchedDepth = watchedDir.getNameCount() - rootDepth;
+
+                for (WatchEvent<?> event : key.pollEvents()) {
+                    WatchEvent.Kind<?> kind = event.kind();
+                    if (kind == OVERFLOW) continue;
+
+                    @SuppressWarnings("unchecked")
+                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                    Path fullPath = watchedDir.resolve(ev.context());
+                    eventConsumer.accept(new FullPathWatchEvent(ev.kind(), ev.context().toString(), fullPath, ev.count()));
+
+                    if (kind == ENTRY_CREATE && Files.isDirectory(fullPath) && watchedDepth + 1 <= maxDepth) {
+                        Files.walkFileTree(fullPath, Set.of(), maxDepth - watchedDepth - 1,
+                                new SimpleFileVisitor<>() {
+                                    @Override
+                                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                                        try {
+                                            dir.register(watcher, kinds.toArray(WatchEvent.Kind[]::new));
+                                        } catch (IOException ignored) {
+                                        }
+                                        return FileVisitResult.CONTINUE;
+                                    }
+                                }
+                        );
+                    }
+                }
+                key.reset();
+            }
+
+        } catch (Exception e) {
             throw new MokeException(e);
         }
     }
