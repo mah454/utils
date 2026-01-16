@@ -50,7 +50,7 @@ public class FileUtils {
         }
     }
 
-    public static List<Path> listFileTree(Path root, String pattern, boolean ignoreAccessDenied,int maxDepth) {
+    public static List<Path> listFileTree(Path root, String pattern, boolean ignoreAccessDenied, int maxDepth) {
         List<Path> list = new ArrayList<>();
         try {
             Files.walkFileTree(root, Set.of(), maxDepth, new SimpleFileVisitor<>() {
@@ -285,6 +285,14 @@ public class FileUtils {
     public static void createRandomFile(Path path, long size) {
         try (RandomAccessFile raf = new RandomAccessFile(path.toFile(), "rw")) {
             raf.setLength(size);
+        } catch (IOException e) {
+            throw new MokeException(e.getMessage());
+        }
+    }
+
+    public static void createFile(Path path) {
+        try {
+            Files.createFile(path);
         } catch (IOException e) {
             throw new MokeException(e.getMessage());
         }
