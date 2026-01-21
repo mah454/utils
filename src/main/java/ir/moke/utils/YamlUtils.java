@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ir.moke.MokeException;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,7 +87,9 @@ public class YamlUtils {
     public static Properties loadAsProperties(InputStream is) {
         Properties props = new Properties();
         try {
-            Map<String, Object> yamlMap = objectMapper.readValue(is, new TypeReference<>() {
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(is);
+            byte[] bytes = bufferedInputStream.readAllBytes();
+            Map<String, Object> yamlMap = objectMapper.readValue(bytes, new TypeReference<>() {
             });
             flattenMap("", yamlMap, props);
         } catch (IOException e) {
