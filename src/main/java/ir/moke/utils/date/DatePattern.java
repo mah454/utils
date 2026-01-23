@@ -1,5 +1,12 @@
 package ir.moke.utils.date;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public enum DatePattern {
     YEAR_DATE_PATTERN("yyyy"),                                                     // 2023
     SMALLEST_DATE_PATTERN("yyMMdd"),                                               // 081215
@@ -37,5 +44,45 @@ public enum DatePattern {
     @Override
     public String toString() {
         return pattern;
+    }
+
+    public static boolean isValidDate(String dateStr) {
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return false;
+        }
+
+        for (DatePattern dp : DatePattern.values()) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dp.toString());
+
+                try {
+                    ZonedDateTime.parse(dateStr, formatter);
+                    return true;
+                } catch (DateTimeParseException ignore) {
+                }
+
+                try {
+                    LocalDateTime.parse(dateStr, formatter);
+                    return true;
+                } catch (DateTimeParseException ignore) {
+                }
+
+                try {
+                    LocalDate.parse(dateStr, formatter);
+                    return true;
+                } catch (DateTimeParseException ignore) {
+                }
+
+                try {
+                    LocalTime.parse(dateStr, formatter);
+                    return true;
+                } catch (DateTimeParseException ignore) {
+                }
+
+            } catch (IllegalArgumentException ignore) {
+            }
+        }
+
+        return false;
     }
 }

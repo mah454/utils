@@ -37,11 +37,28 @@ public class StringUtils {
         return Base64.encodeBase64String(bytes);
     }
 
-    public static boolean isNumeric(String num) {
-        if (num == null) {
-            return false;
-        }
-        return numeric_pattern.matcher(num).matches();
+    public static boolean isEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    public static boolean isNumeric(String str) {
+        return !isEmpty(str) && str.chars().allMatch(Character::isDigit);
+    }
+
+    public static boolean isAlphabetic(String str) {
+        return !isEmpty(str) && str.chars().allMatch(Character::isAlphabetic);
+    }
+
+    public static boolean isAlphaNumeric(String str) {
+        return !isEmpty(str) && str.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$");
+    }
+
+    public static boolean isLetter(String str) {
+        return !isEmpty(str) && str.chars().allMatch(Character::isLetter);
+    }
+
+    public static boolean isBoolean(String str) {
+        return !isEmpty(str) && (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("false"));
     }
 
     public static int generateRandomNumber() {
