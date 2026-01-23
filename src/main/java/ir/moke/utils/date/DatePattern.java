@@ -46,8 +46,8 @@ public enum DatePattern {
         return pattern;
     }
 
-    public static boolean isValidDate(String dateStr) {
-        if (dateStr == null || dateStr.trim().isEmpty()) {
+    public static boolean isDateTime(String str) {
+        if (str == null || str.trim().isEmpty()) {
             return false;
         }
 
@@ -56,25 +56,25 @@ public enum DatePattern {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dp.toString());
 
                 try {
-                    ZonedDateTime.parse(dateStr, formatter);
+                    ZonedDateTime.parse(str, formatter);
                     return true;
                 } catch (DateTimeParseException ignore) {
                 }
 
                 try {
-                    LocalDateTime.parse(dateStr, formatter);
+                    LocalDateTime.parse(str, formatter);
                     return true;
                 } catch (DateTimeParseException ignore) {
                 }
 
                 try {
-                    LocalDate.parse(dateStr, formatter);
+                    LocalDate.parse(str, formatter);
                     return true;
                 } catch (DateTimeParseException ignore) {
                 }
 
                 try {
-                    LocalTime.parse(dateStr, formatter);
+                    LocalTime.parse(str, formatter);
                     return true;
                 } catch (DateTimeParseException ignore) {
                 }
