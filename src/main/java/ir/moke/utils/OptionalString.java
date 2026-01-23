@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 public class OptionalString {
 
     private final String value;
-    private static final OptionalString EMPTY = new OptionalString(null);
 
     private OptionalString(String value) {
         this.value = value;
