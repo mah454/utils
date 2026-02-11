@@ -20,12 +20,6 @@ public class OptionalString {
         return new OptionalString(Objects.requireNonNull(value));
     }
 
-    public <U> Optional<U> map(Function<String, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
-        if (StringUtils.isEmpty(this.value)) return Optional.empty();
-        return Optional.ofNullable(mapper.apply(value));
-    }
-
     public boolean check(Predicate<String> predicate) {
         return predicate.test(this.value);
     }
