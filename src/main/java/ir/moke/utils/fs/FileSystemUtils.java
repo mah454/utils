@@ -1,7 +1,6 @@
-package ir.moke.utils;
+package ir.moke.utils.fs;
 
 import ir.moke.MokeException;
-import ir.moke.model.FullPathWatchEvent;
 
 import java.io.IOException;
 import java.nio.file.*;

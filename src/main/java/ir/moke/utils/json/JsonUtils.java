@@ -1,4 +1,4 @@
-package ir.moke.utils;
+package ir.moke.utils.json;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;

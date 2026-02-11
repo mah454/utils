@@ -4,7 +4,7 @@
     <groupId>ir.moke</groupId>
     <artifactId>utils</artifactId>
     <packaging>jar</packaging>
-    <version>0.3.1</version>
+    <version>0.4</version>
     <name>utils</name>
 
     <url>https://github.com/mah454/utils</url>
@@ -38,6 +38,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.13.2</version>
+        </dependency>
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>

@@ -1,0 +1,10 @@
+AND=1
+OR=2
+NULL=3
+IDENT=4
+NUMBER=5
+STRING=6
+WS=7
+'and'=1
+'or'=2
+'null'=3
