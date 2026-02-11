@@ -35,6 +35,7 @@ public class OptionalString {
 
     public <U> U parseOrGet(Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier) {
         Objects.requireNonNull(parser);
+        Objects.requireNonNull(supplier);
         if (check(predicate)) {
             return parser.apply(this.value);
         } else {
