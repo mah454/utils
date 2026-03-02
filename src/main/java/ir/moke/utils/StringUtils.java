@@ -9,10 +9,10 @@ import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 public class StringUtils {
-    private static final Pattern numeric_pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private static final String validPasswordCharacter  = "^[A-Za-z\\d!@#$%^&*()_+?=\\-,.{}\\[\\]]+$";
+    private static final String alphabeticNumberPattern = "^[A-Za-z\\d]+$";
     private static final int SECURITY_RANDOM_LENGTH = 32;
     private static final String NUMBERS = "0123456789";
     private static final String ALPHABETIC = "abcdefghijklmnopqrstuvwxyz";
@@ -50,11 +50,15 @@ public class StringUtils {
     }
 
     public static boolean isAlphaNumeric(String str) {
-        return !isEmpty(str) && str.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$");
+        return !isEmpty(str) && str.matches(alphabeticNumberPattern);
     }
 
     public static boolean isLetter(String str) {
         return !isEmpty(str) && str.chars().allMatch(Character::isLetter);
+    }
+
+    public static boolean isValidPassword(String str) {
+        return !isEmpty(str) && str.matches(validPasswordCharacter);
     }
 
     public static boolean isBoolean(String str) {
