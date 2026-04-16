@@ -59,7 +59,7 @@ public class FileSystemUtils {
                 }
             });
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 WatchKey key = watcher.take();
                 Path watchedDir = (Path) key.watchable();
                 int watchedDepth = watchedDir.getNameCount() - rootDepth;
