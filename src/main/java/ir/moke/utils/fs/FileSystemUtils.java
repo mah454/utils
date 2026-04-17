@@ -17,11 +17,11 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 public class FileSystemUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileSystemUtils.class);
 
-    public static void watchPathAsync(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
+    public static void watchPathAsync(Path path, List<WatchEvent.Kind<Path>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
         Thread.startVirtualThread(() -> watchPath(path, kinds, eventConsumer));
     }
 
-    public static void watchPath(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
+    public static void watchPath(Path path, List<WatchEvent.Kind<Path>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
         if (!Files.isDirectory(path))
             throw new IllegalArgumentException("path %s should be a directory".formatted(path));
         try (WatchService watchService = path.getFileSystem().newWatchService()) {
