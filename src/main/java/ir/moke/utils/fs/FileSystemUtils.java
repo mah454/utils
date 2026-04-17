@@ -1,6 +1,8 @@
 package ir.moke.utils.fs;
 
 import ir.moke.MokeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -13,12 +15,13 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 public class FileSystemUtils {
+    private static final Logger logger = LoggerFactory.getLogger(FileSystemUtils.class);
 
-    public static void watchPathAsync(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<WatchEvent<?>> pathConsumer) {
-        Thread.startVirtualThread(() -> watchPath(path, kinds, pathConsumer));
+    public static void watchPathAsync(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
+        Thread.startVirtualThread(() -> watchPath(path, kinds, eventConsumer));
     }
 
-    public static void watchPath(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<WatchEvent<?>> pathConsumer) {
+    public static void watchPath(Path path, List<WatchEvent.Kind<?>> kinds, Consumer<FullPathWatchEvent> eventConsumer) {
         if (!Files.isDirectory(path))
             throw new IllegalArgumentException("path %s should be a directory".formatted(path));
         try (WatchService watchService = path.getFileSystem().newWatchService()) {
@@ -27,7 +30,10 @@ public class FileSystemUtils {
             while ((key = watchService.take()) != null) {
                 List<WatchEvent<?>> events = key.pollEvents();
                 for (WatchEvent<?> event : events) {
-                    pathConsumer.accept(event);
+                    @SuppressWarnings("unchecked")
+                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                    Path fullPath = ev.context();
+                    eventConsumer.accept(new FullPathWatchEvent(ev.kind(), ev.context().toString(), fullPath, ev.count()));
                 }
 
                 key.reset();
@@ -91,7 +97,11 @@ public class FileSystemUtils {
                 key.reset();
             }
         } catch (Exception e) {
-            throw new MokeException(e);
+            if (e instanceof InterruptedException) {
+                logger.warn("Deactivate recursive watch filesystem {}", root);
+            } else {
+                logger.error("Unknown error", e);
+            }
         }
     }
 }
