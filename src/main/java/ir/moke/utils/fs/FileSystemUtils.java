@@ -1,6 +1,5 @@
 package ir.moke.utils.fs;
 
-import ir.moke.MokeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +28,11 @@ public class FileSystemUtils {
             WatchKey key;
             while ((key = watchService.take()) != null) {
                 List<WatchEvent<?>> events = key.pollEvents();
+                Path watchedDir = (Path) key.watchable();
                 for (WatchEvent<?> event : events) {
                     @SuppressWarnings("unchecked")
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                    Path fullPath = ev.context();
+                    Path fullPath = watchedDir.resolve(ev.context());
                     eventConsumer.accept(new FullPathWatchEvent(ev.kind(), ev.context().toString(), fullPath, ev.count()));
                 }
 
