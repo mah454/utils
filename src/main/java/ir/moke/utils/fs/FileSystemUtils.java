@@ -39,7 +39,11 @@ public class FileSystemUtils {
                 key.reset();
             }
         } catch (Exception e) {
-            throw new MokeException(e);
+            if (e instanceof InterruptedException) {
+                logger.warn("Deactivate watch filesystem {}", path);
+            } else {
+                logger.error("Unknown error", e);
+            }
         }
     }
 
