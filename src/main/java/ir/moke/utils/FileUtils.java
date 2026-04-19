@@ -255,7 +255,8 @@ public class FileUtils {
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new MokeException("Failed copy %s".formatted(source.getFileName()));
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException("Failed copy %s %s".formatted(simpleName, source.getFileName()));
         }
     }
 
