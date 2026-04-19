@@ -306,7 +306,7 @@ public class FileUtils {
 
     public static void createFile(Path path) {
         try {
-            Files.createFile(path);
+            if (!isFileExists(path)) Files.createFile(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
             throw new MokeException(simpleName + " " + e.getMessage());
