@@ -71,7 +71,8 @@ public class FileUtils {
                 }
             });
         } catch (IOException e) {
-            throw new MokeException(e);
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
         return list;
     }
@@ -82,7 +83,8 @@ public class FileUtils {
                 Files.delete(path);
             }
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -114,7 +116,8 @@ public class FileUtils {
                         .map(Path::toFile)
                         .forEach(File::delete);
             } catch (IOException e) {
-                throw new MokeException(e.getMessage());
+                String simpleName = e.getClass().getSimpleName();
+                throw new MokeException(simpleName + " " + e.getMessage());
             }
         }
     }
@@ -124,7 +127,8 @@ public class FileUtils {
             if (isFileExists(path)) return;
             Files.createDirectory(path);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -133,7 +137,8 @@ public class FileUtils {
             fos.write(content);
             fos.flush();
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -141,7 +146,8 @@ public class FileUtils {
         try {
             Files.write(path, content, openOption);
         } catch (IOException e) {
-            throw new MokeException(e);
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -170,7 +176,8 @@ public class FileUtils {
             final File file = new File(fileName);
             return Files.readString(file.toPath());
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -178,7 +185,8 @@ public class FileUtils {
         try {
             return Files.readAllLines(path);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -186,7 +194,8 @@ public class FileUtils {
         try {
             return Files.readString(path);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -194,7 +203,8 @@ public class FileUtils {
         try {
             return Files.readAllBytes(path);
         } catch (IOException e) {
-            return null;
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -219,7 +229,8 @@ public class FileUtils {
                 return bytesRead < bufferSize ? Arrays.copyOf(buffer, bytesRead) : buffer;
             }
         } catch (Exception e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -265,7 +276,8 @@ public class FileUtils {
 
             Files.write(file.toPath(), newContent.getBytes(), StandardOpenOption.WRITE);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -273,7 +285,8 @@ public class FileUtils {
         try {
             if (!isFileExists(path)) Files.createDirectory(path);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -286,7 +299,8 @@ public class FileUtils {
         try (RandomAccessFile raf = new RandomAccessFile(path.toFile(), "rw")) {
             raf.setLength(size);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -294,7 +308,8 @@ public class FileUtils {
         try {
             Files.createFile(path);
         } catch (IOException e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 
@@ -309,7 +324,8 @@ public class FileUtils {
                 raf.setLength(totalSize);
             }
         } catch (Exception e) {
-            throw new MokeException(e.getMessage());
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
         }
     }
 }
