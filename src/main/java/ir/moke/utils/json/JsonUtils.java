@@ -6,10 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
@@ -40,6 +37,7 @@ public class JsonUtils {
                 .build()
                 .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES))
                 .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)   // <-- add this
                 .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
