@@ -24,26 +24,26 @@ public class OptionalString {
     }
 
     public <U> U parse(Predicate<String> predicate, Function<String, ? extends U> parser) {
-        try {
-            if (check(predicate)) {
-                return Objects.requireNonNull(parser).apply(this.value);
-            } else {
-                throw new MokeException("Failed to parse %s".formatted(this.value));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (check(predicate)) {
+            return Objects.requireNonNull(parser).apply(this.value);
+        } else {
+            throw new MokeException("Failed to parse %s".formatted(this.value));
         }
     }
 
     public <U> U parseOrGet(Predicate<String> predicate, Function<String, ? extends U> parser, Supplier<? extends U> supplier) {
-        try {
-            if (check(predicate)) {
-                return Objects.requireNonNull(parser).apply(this.value);
-            } else {
-                return Objects.requireNonNull(supplier).get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (check(predicate)) {
+            return Objects.requireNonNull(parser).apply(this.value);
+        } else {
+            return Objects.requireNonNull(supplier).get();
+        }
+    }
+
+    public <U> U parseOrGet(Predicate<String> predicate, Function<String, ? extends U> parser, U u) {
+        if (check(predicate)) {
+            return Objects.requireNonNull(parser).apply(this.value);
+        } else {
+            return u;
         }
     }
 }
