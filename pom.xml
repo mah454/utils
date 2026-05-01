@@ -33,7 +33,7 @@
     <properties>
         <jackson.version>2.20.0</jackson.version>
         <common-codec.version>1.20.0</common-codec.version>
-        <bouncycastle.version>1.83</bouncycastle.version>
+        <bouncycastle.version>1.80</bouncycastle.version>
         <icu.version>77.1</icu.version>
     </properties>
 
