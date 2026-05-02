@@ -25,6 +25,7 @@ public interface TtyAsciiCodecs {
     String YELLOW = ESC + "[33m";
     String BLUE = ESC + "[34m";
     String PURPLE = ESC + "[35m";
+    String WHITE = ESC + "[37m";
 
     String BACKGROUND_RED = ESC + "[41m";
     String BACKGROUND_GREEN = ESC + "[42m";
