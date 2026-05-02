@@ -46,4 +46,12 @@ public class OptionalObject<T> {
             return u;
         }
     }
+
+    public <U> U parseOrThrows(Predicate<? super T> predicate, Function<? super T, ? extends U> parser, Supplier<? extends Throwable> supplier) throws Throwable {
+        if (check(predicate)) {
+            return Objects.requireNonNull(parser).apply(this.value);
+        } else {
+            throw supplier.get();
+        }
+    }
 }
