@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import ir.moke.MokeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,93 +40,57 @@ public class JsonUtils {
                 .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public static String toJson(Object o) {
-        try {
-            return objectMapper.writeValueAsString(o);
-        } catch (JsonProcessingException e) {
-            throw new MokeException(e);
-        }
+    public static String toJson(Object o) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(o);
     }
 
-    public static <T> T toObject(String str, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(str, clazz);
-        } catch (JsonProcessingException e) {
-            throw new MokeException(e);
-        }
+    public static <T> T toObject(String str, Class<T> clazz) throws JsonProcessingException {
+        return objectMapper.readValue(str, clazz);
     }
 
-    public static <T> T toObject(byte[] bytes, Class<T> clazz) {
+    public static <T> T toObject(byte[] bytes, Class<T> clazz) throws JsonProcessingException {
         return toObject(new String(bytes), clazz);
     }
 
-    public static <T> T toObject(File file, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(file, clazz);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> T toObject(File file, Class<T> clazz) throws IOException {
+        return objectMapper.readValue(file, clazz);
     }
 
-    public static <T> List<Object> toList(String str) {
-        try {
-            TypeReference<List<Object>> typeRef = new TypeReference<>() {
-            };
-            return objectMapper.readValue(str, typeRef);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> List<Object> toList(String str) throws JsonProcessingException {
+        TypeReference<List<Object>> typeRef = new TypeReference<>() {
+        };
+        return objectMapper.readValue(str, typeRef);
 
     }
 
-    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<?> genericType) {
-        try {
-            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
-            return objectMapper.readValue(str, listType);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<?> genericType) throws JsonProcessingException {
+        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
+        return objectMapper.readValue(str, listType);
     }
 
-    public static <T> T toObject(String str, String canonicalType) {
-        try {
-            JavaType javaType = objectMapper.getTypeFactory().constructFromCanonical(canonicalType);
-            return objectMapper.readValue(str, javaType);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> T toObject(String str, String canonicalType) throws JsonProcessingException {
+        JavaType javaType = objectMapper.getTypeFactory().constructFromCanonical(canonicalType);
+        return objectMapper.readValue(str, javaType);
     }
 
-    public static <T> HashMap<String, T> toMap(String str, Class<? extends Map<String, T>> mapClassType, Class<T> genericType) {
-        try {
-            MapType mapType = objectMapper.getTypeFactory().constructMapType(mapClassType, String.class, genericType);
-            return objectMapper.readValue(str, mapType);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> HashMap<String, T> toMap(String str, Class<? extends Map<String, T>> mapClassType, Class<T> genericType) throws JsonProcessingException {
+        MapType mapType = objectMapper.getTypeFactory().constructMapType(mapClassType, String.class, genericType);
+        return objectMapper.readValue(str, mapType);
     }
 
-    public static <T> Map<String, T> toMap(String str) {
-        try {
-            TypeReference<HashMap<String, T>> typeRef = new TypeReference<>() {
-            };
-            return objectMapper.readValue(str, typeRef);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static <T> Map<String, T> toMap(String str) throws JsonProcessingException {
+        TypeReference<HashMap<String, T>> typeRef = new TypeReference<>() {
+        };
+        return objectMapper.readValue(str, typeRef);
     }
 
-    public static void writeToFile(File file, Object object) {
-        try {
-            objectMapper.writeValue(file, object);
-        } catch (IOException e) {
-            throw new MokeException(e);
-        }
+    public static void writeToFile(File file, Object object) throws IOException {
+        objectMapper.writeValue(file, object);
     }
 
     public static boolean isJson(String str) {
         try {
-            objectMapper.readTree(str);
+            readTree(str);
             return true;
         } catch (JsonProcessingException e) {
             return false;
@@ -142,20 +105,12 @@ public class JsonUtils {
         return objectMapper.convertValue(o, clazz);
     }
 
-    public static JsonNode readTree(String str) {
-        try {
-            return objectMapper.readTree(str);
-        } catch (JsonProcessingException e) {
-            throw new MokeException(e);
-        }
+    public static JsonNode readTree(String str) throws JsonProcessingException {
+        return objectMapper.readTree(str);
     }
 
-    public static <T> T treeToValue(TreeNode treeNode, Class<T> clazz) {
-        try {
-            return objectMapper.treeToValue(treeNode, clazz);
-        } catch (JsonProcessingException e) {
-            throw new MokeException(e);
-        }
+    public static <T> T treeToValue(TreeNode treeNode, Class<T> clazz) throws JsonProcessingException {
+        return objectMapper.treeToValue(treeNode, clazz);
     }
 
     public static boolean isNullOrEmpty(JsonNode node) {
