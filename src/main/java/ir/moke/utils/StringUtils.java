@@ -1,8 +1,6 @@
 package ir.moke.utils;
 
 import ir.moke.MokeException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class StringUtils {
-    private static final String validPasswordCharacter  = "^[A-Za-z\\d!@#$%^&*()_+?=\\-,.{}\\[\\]]+$";
+    private static final String validPasswordCharacter = "^[A-Za-z\\d!@#$%^&*()_+?=\\-,.{}\\[\\]]+$";
     private static final String alphabeticNumberPattern = "^[A-Za-z\\d]+$";
     private static final int SECURITY_RANDOM_LENGTH = 32;
     private static final String NUMBERS = "0123456789";
@@ -27,14 +25,14 @@ public class StringUtils {
     }
 
     public static String hashPassword(String password) {
-        return Base64.encodeBase64String(DigestUtils.sha512(password));
+        return DigestUtils.sha512Hex(password);
     }
 
     public static String randomHash() {
         byte[] bytes = new byte[SECURITY_RANDOM_LENGTH];
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(bytes);
-        return Base64.encodeBase64String(bytes);
+        return DigestUtils.toBase64(bytes);
     }
 
     public static boolean isEmpty(String str) {

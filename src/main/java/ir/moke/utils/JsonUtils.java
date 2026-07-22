@@ -1,4 +1,4 @@
-package ir.moke.utils.json;
+package ir.moke.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,10 +15,10 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JsonUtils {
 
@@ -37,6 +37,7 @@ public class JsonUtils {
                 .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES))
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)   // <-- add this
+                .enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)   // <-- add this
                 .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
@@ -63,9 +64,14 @@ public class JsonUtils {
 
     }
 
-    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<?> genericType) throws JsonProcessingException {
-        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
-        return objectMapper.readValue(str, listType);
+    public static <T> List<T> toList(String str, Class<T> elementType) throws JsonProcessingException {
+        CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, elementType);
+        return objectMapper.readValue(str, type);
+    }
+
+    public static <T> Set<T> toSet(String str, Class<T> elementType) throws JsonProcessingException {
+        CollectionType type = objectMapper.getTypeFactory().constructCollectionType(Set.class, elementType);
+        return objectMapper.readValue(str, type);
     }
 
     public static <T> T toObject(String str, String canonicalType) throws JsonProcessingException {
