@@ -113,6 +113,7 @@ public class FileUtils {
         if (isFileExists(directory)) {
             try (Stream<Path> walk = Files.walk(directory)) {
                 walk.sorted(Comparator.reverseOrder())
+                        .filter(FileUtils::isFileExists)
                         .map(Path::toFile)
                         .forEach(File::delete);
             } catch (IOException e) {
