@@ -55,6 +55,14 @@ public class StringUtils {
         return !isEmpty(str) && str.chars().allMatch(Character::isLetter);
     }
 
+    public static boolean isLetterOrDigit(String str) {
+        return !isEmpty(str) && str.chars().allMatch(Character::isDefined);
+    }
+
+    public static boolean isDefined(String str) {
+        return str.chars().allMatch(Character::isDefined);
+    }
+
     public static boolean isValidPassword(String str) {
         return !isEmpty(str) && str.matches(validPasswordCharacter);
     }
