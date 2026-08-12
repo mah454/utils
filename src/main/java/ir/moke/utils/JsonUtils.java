@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -25,20 +24,22 @@ public class JsonUtils {
     private static final ObjectMapper objectMapper;
 
     static {
-        objectMapper = JsonMapper.builder()
-                .configure(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION, true)
-                .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-                .configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-                .build()
-                .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES))
-                .registerModule(new JavaTimeModule())
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)   // <-- add this
-                .enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)   // <-- add this
-                .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper = new ObjectMapper();
+
+        objectMapper.configure(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION, true);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
+
+        objectMapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+        objectMapper.registerModule(new JavaTimeModule());
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID);
+
+        objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public static String toJson(Object o) throws JsonProcessingException {
