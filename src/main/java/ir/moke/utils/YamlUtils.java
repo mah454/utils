@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ir.moke.MokeException;
 
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 public class YamlUtils {
 
@@ -62,6 +64,16 @@ public class YamlUtils {
         } catch (IOException e) {
             throw new MokeException(e);
         }
+    }
+
+    public static <T> List<T> toList(String str, Class<T> elementType) throws JsonProcessingException {
+        CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, elementType);
+        return objectMapper.readValue(str, type);
+    }
+
+    public static <T> Set<T> toSet(String str, Class<T> elementType) throws JsonProcessingException {
+        CollectionType type = objectMapper.getTypeFactory().constructCollectionType(Set.class, elementType);
+        return objectMapper.readValue(str, type);
     }
 
     public static void writeToFile(File file, Object object) {
