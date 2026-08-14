@@ -172,18 +172,9 @@ public class FileUtils {
         return Files.exists(path, LinkOption.NOFOLLOW_LINKS);
     }
 
-    public static String readFileAsString(String fileName) {
-        try {
-            final File file = new File(fileName);
-            return Files.readString(file.toPath());
-        } catch (IOException e) {
-            String simpleName = e.getClass().getSimpleName();
-            throw new MokeException(simpleName + " " + e.getMessage());
-        }
-    }
-
     public static List<String> readAllLines(Path path) {
         try {
+            if (!isFileExists(path)) return null;
             return Files.readAllLines(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
@@ -193,6 +184,7 @@ public class FileUtils {
 
     public static String readFileAsString(Path path) {
         try {
+            if (!isFileExists(path)) return null;
             return Files.readString(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
@@ -202,6 +194,7 @@ public class FileUtils {
 
     public static byte[] readFileAsBytes(Path path) {
         try {
+            if (!isFileExists(path)) return null;
             return Files.readAllBytes(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
