@@ -125,8 +125,7 @@ public class FileUtils {
 
     public static void makeDirectories(Path path) {
         try {
-            if (isFileExists(path)) return;
-            Files.createDirectories(path);
+            if (!isFileExists(path)) Files.createDirectories(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
             throw new MokeException(simpleName + " " + e.getMessage());
@@ -135,8 +134,7 @@ public class FileUtils {
 
     public static void makeDirectory(Path path) {
         try {
-            if (isFileExists(path)) return;
-            Files.createDirectory(path);
+            if (!isFileExists(path)) Files.createDirectory(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
             throw new MokeException(simpleName + " " + e.getMessage());
