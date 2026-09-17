@@ -123,6 +123,16 @@ public class FileUtils {
         }
     }
 
+    public static void makeDirectories(Path path) {
+        try {
+            if (isFileExists(path)) return;
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            String simpleName = e.getClass().getSimpleName();
+            throw new MokeException(simpleName + " " + e.getMessage());
+        }
+    }
+
     public static void makeDirectory(Path path) {
         try {
             if (isFileExists(path)) return;
@@ -270,15 +280,6 @@ public class FileUtils {
             String newContent = String.join("\n", lineList);
 
             Files.write(file.toPath(), newContent.getBytes(), StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            String simpleName = e.getClass().getSimpleName();
-            throw new MokeException(simpleName + " " + e.getMessage());
-        }
-    }
-
-    public static void createDirectory(Path path) {
-        try {
-            if (!isFileExists(path)) Files.createDirectory(path);
         } catch (IOException e) {
             String simpleName = e.getClass().getSimpleName();
             throw new MokeException(simpleName + " " + e.getMessage());
