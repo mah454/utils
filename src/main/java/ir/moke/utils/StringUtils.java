@@ -17,6 +17,7 @@ public class StringUtils {
     private static final String ALPHABETIC_CAPITAL = ALPHABETIC.toUpperCase();
     private static final String ALL_CHARACTERS = ALPHABETIC + ALPHABETIC_CAPITAL + NUMBERS;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final String MODULE_NAME_PATTERN = "^[A-Za-z0-9_.-]+$";
 
     public static String formatSize(long v) {
         if (v < 1024) return v + " B";
@@ -56,11 +57,11 @@ public class StringUtils {
     }
 
     public static boolean isLetterOrDigit(String str) {
-        return !isEmpty(str) && str.chars().allMatch(Character::isDefined);
+        return !isEmpty(str) && str.chars().allMatch(Character::isLetterOrDigit);
     }
 
     public static boolean isDefined(String str) {
-        return str.chars().allMatch(Character::isLetterOrDigit);
+        return str.chars().allMatch(Character::isDefined);
     }
 
     public static boolean isValidPassword(String str) {
@@ -129,5 +130,9 @@ public class StringUtils {
         String lastPart = input.substring(input.length() - lastChars);
 
         return firstPart + "..." + lastPart;
+    }
+
+    public static boolean isValidModuleName(String name) {
+        return !isEmpty(name) && name.matches(MODULE_NAME_PATTERN);
     }
 }
