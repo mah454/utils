@@ -60,7 +60,7 @@ public class StringUtils {
     }
 
     public static boolean isDefined(String str) {
-        return str.chars().allMatch(Character::isDefined);
+        return str.chars().allMatch(Character::isLetterOrDigit);
     }
 
     public static boolean isValidPassword(String str) {
